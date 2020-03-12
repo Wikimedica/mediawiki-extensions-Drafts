@@ -1,0 +1,29 @@
+{
+	"name": "Drafts",
+	"author": [
+		"Antoine Mercier-Linteau"
+	],
+	"url": "https://github.com/Wikimedica/mediawiki-extensions-Drafts",
+	"descriptionmsg": "drafts-desc",
+	"license-name": "GPL-3.0-or-later",
+	"type": "specialpage",
+	"requires": {
+		"MediaWiki": ">= 1.31.0"
+	},
+	"MessagesDirs": {
+		"Drafts": [
+			"i18n"
+		]
+	},
+	"AutoloadClasses": {
+		"MediaWiki\\Extension\\Drafts": "includes/Drafts.php",
+		"MediaWiki\\Extension\\Drafts\\SpecialDrafts": "includes/specials/SpecialDrafts.php"
+	},
+	"Hooks": {
+		"PersonalUrls": "MediaWiki\\Extension\\Drafts::onPersonalUrls"
+	},
+	"SpecialPages": {
+		"Drafts" : "MediaWiki\\Extension\\Drafts\\SpecialDrafts"
+	},
+	"manifest_version": 2
+}

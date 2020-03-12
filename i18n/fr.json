@@ -1,0 +1,10 @@
+{
+	"@metadata": {
+		"authors": [
+		]
+	},
+	"drafts-desc": "Permet aux utilisateurs de gérer plusieurs pages brouillons dans leur espace personnel.",
+	"drafts-link-label": "Brouillons",
+	"drafts-link-title": "Mes brouillons",
+	"drafts": "Brouillons"
+}
