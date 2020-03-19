@@ -17,6 +17,7 @@ use OOUI;
  * */
 class SpecialDrafts extends \FormSpecialPage 
 {
+    /** @var Database */
     protected $db;
 
     /**
@@ -26,6 +27,7 @@ class SpecialDrafts extends \FormSpecialPage
     {
         parent::__construct('Drafts', 'edit');
         $this->db = wfGetDB( DB_REPLICA );
+        $this->addHelpLink(\Title::newFromText('Création de page', NS_HELP)->getFullURL(), true);
     }
     
     /**
@@ -130,7 +132,10 @@ window.addEventListener("load", function(){
         return confirm("Êtes-vous certain de vouloir supprimer cette page?");
     });
 });
-</script></html>';
+</script></html>'."\n";
+        
+        // % needs to be replaced with $ for transclusions to work ... no idea why.
+        $t .= '{{Special:CreateNewPage/create/return/'.str_replace('%', '$', urlencode($this->getFullTitle()->getFullText())).'/prefix/'.str_replace('%', '$', urlencode('Utilisateur:'.$this->getUser()->getName().'/Brouillons')).'}}';
         
         $parser = MediaWikiServices::getInstance()->getParser();
         
@@ -143,50 +148,19 @@ window.addEventListener("load", function(){
      **/
     public function getFormFields()
     {
-        // Retrieve all the ontology classes from the database.
-        $titleArray = \TitleArray::newFromResult($this->db->select(
-            'page',
-            [ 'page_id', 'page_namespace', 'page_title'],
-            [
-                'page_is_redirect' => 0,
-                'page_namespace' => NS_CLASS
-            ],
-            __METHOD__,
-            []
-        ));
-        
-        $classes = ['Sélectionnez une classe' => ''];
-        
-        // Build an array of the class names.
-        foreach($titleArray as $title)
-        {
-            if($title->isSubpage()) { continue; } // Skip subpages.
-            if(!\Title::newFromText($title->getText().'/Prototype', NS_CLASS)->exists())
-            {
-                continue; // Skip this class if it does not have a prototype.
-            }
-            
-            $classes[$title->getText()] = $title->getDBkey();
-        }
-        
-        $classes['Page vierge'] = 'empty';
-        
-        return [
-            'class' => [
-                'type' => 'select',
-                'label' => 'Classe (Type)',
-                'options' => $classes,
-                'required' => true,
-                'help' => 'Le type de page duquel vous désirez débuter. Pour une page vierge, sélectionner « Page vierge ».'
-            ],
-            'name' => [
-                'type' => 'text',
-                'label' => 'Nom de la page',
-                'placeholder' => 'ex: Pneumonie',
-                'required' => true,
-                'help' => 'Ce nom sera utilisé comme titre de la page. La page sera ensuite disponible dans la liste de vos brouillons sous ce nom.'
-            ]
+        return [ // Not actually used but defined just so MediaWiki lets form fields trough and displays an edit token.
+            'name' => ['type' => 'hidden'],
+            'delete' => ['type' => 'hidden']
         ];
+    }
+    
+    /**
+     * @inheritdoc
+     */
+    protected function alterForm(\HTMLForm $form)
+    {
+        $form->suppressDefaultSubmit();
+        return $form;
     }
     
     /**
@@ -197,7 +171,7 @@ window.addEventListener("load", function(){
         if(!$data['name']) { return 'Nom de page manquant'; } // If a name was not provided.
         $draft = \Article::newFromTitle(\Title::newFromText($this->getUser()->getName().'/Brouillons/'.ucfirst($data['name']), NS_USER), \RequestContext::getMain())->getPage();
         
-        if($this->getRequest()->getVal('wpDelete', false)) // If this is a request to delete a page.
+        if($data['delete'] === null) // If this is a request to delete a page.
         {
             $errors = [];
             if(!$draft->exists()) { return 'La page n\'existe pas'; }
@@ -207,30 +181,8 @@ window.addEventListener("load", function(){
             }
             
             $this->getOutput()->redirect($this->getFullTitle()->getFullURL(['delete-success' => $draft->getTitle()->getSubpageText()]));
-            return true;
         }
         
-        // Else this is request to create a draft.
-        if($data['class'] != 'empty')
-        {
-            $class = \Title::newFromText($data['class'].'/Prototype', NS_CLASS);
-            
-            // Do some validation.
-            if(!$class->exists()) { return 'Classe invalide ou ne contient pas de prototype'; }
-            if(MediaWikiServices::getInstance()->getPermissionManager()->userCan('view', $this->getUser(), $class))
-            {
-                return 'Vous n\'êtes pas autorisés à utiliser cette classe';
-            }
-            
-            $prototype = \Article::newFromTitle($class, \RequestContext::getMain());
-            $content = $prototype->getRevision()->getContent()->getNativeData();
-            $content = str_replace(['<includeonly>' , '</includeonly>'], '', $content);
-        }
-        else { $content = ''; } // The user wanted a blan page.
-        
-        // Save the new draft.
-        $status = $draft->doEditContent(\ContentHandler::makeContent( $content, $draft->getTitle()), 'Création du brouillon', 0, false, $this->getUser());
-        
-        $this->getOutput()->redirect($this->getFullTitle()->getFullURL(['success' => $draft->getTitle()->getSubpageText()]));
+        return true;
     }
 }

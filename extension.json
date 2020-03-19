@@ -17,13 +17,15 @@
 	},
 	"AutoloadClasses": {
 		"MediaWiki\\Extension\\Drafts": "includes/Drafts.php",
-		"MediaWiki\\Extension\\Drafts\\SpecialDrafts": "includes/specials/SpecialDrafts.php"
+		"MediaWiki\\Extension\\Drafts\\SpecialDrafts": "includes/specials/SpecialDrafts.php",
+		"MediaWiki\\Extension\\Drafts\\SpecialCreateNewPage": "includes/specials/SpecialCreateNewPage.php"
 	},
 	"Hooks": {
 		"PersonalUrls": "MediaWiki\\Extension\\Drafts::onPersonalUrls"
 	},
 	"SpecialPages": {
-		"Drafts" : "MediaWiki\\Extension\\Drafts\\SpecialDrafts"
+		"Drafts" : "MediaWiki\\Extension\\Drafts\\SpecialDrafts",
+		"CreateNewPage" : "MediaWiki\\Extension\\Drafts\\SpecialCreateNewPage"
 	},
 	"manifest_version": 2
 }
