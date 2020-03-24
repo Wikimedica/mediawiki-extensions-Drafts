@@ -56,7 +56,7 @@ class SpecialCreateNewPage extends \FormSpecialPage
             {
                 /* prefix must be followed by an argument. This argument is urlencoded
                  * and then % needs to be replaced with $ for it to go through. No idea
-                 * why */
+                 * why. */
                 $this->prefix = urldecode(str_replace('$', '%', $p[$i + 1]));
                 $i++;
             }
@@ -64,13 +64,16 @@ class SpecialCreateNewPage extends \FormSpecialPage
             {
                 /* return must be followed by an argument. This argument is urlencoded
                  * and then % needs to be replaced with $ for it to go through. No idea
-                 * why */
+                 * why. */
                 $this->return = urldecode(str_replace('$', '%', $p[$i + 1]));
                 $i++;
             }
             else if($p[$i] == 'name' && isset($p[$i + 1]))
             {
-                $this->name = urldecode($p[$i + 1]);
+                /* name must be followed by an argument. This argument is urlencoded
+                 * and then % needs to be replaced with $ for it to go through. No idea
+                 * why. */
+                $this->name = urldecode(str_replace('$', '%', $p[$i + 1]));
                 $i++;
             }
         }
@@ -145,7 +148,8 @@ class SpecialCreateNewPage extends \FormSpecialPage
      * */
     public function onSubmit($data)
     {           
-        // Else this is request to create a draft.
+        if(!isset($data['class'])) { return 'Nom de classe manquant'; } // If a class was not provided.
+        
         if($data['class'] != 'empty')
         {
             $class = \Title::newFromText($data['class'].'/Prototype', NS_CLASS);
@@ -175,7 +179,7 @@ class SpecialCreateNewPage extends \FormSpecialPage
             return;
         }
         
-        if(!$data['name']) { return 'Nom de page manquant'; } // If a name was not provided.
+        if(!isset($data['name'])) { return 'Nom de page manquant'; } // If a name was not provided.
         $draft = \Article::newFromTitle(\Title::newFromText($this->prefix.'/'.ucfirst($data['name'])), \RequestContext::getMain())->getPage();
         
         /* Save the new draft. Allows overwriting an existing page with preloaded content, something 

@@ -134,7 +134,7 @@ window.addEventListener("load", function(){
 });
 </script></html>'."\n";
         
-        // % needs to be replaced with $ for transclusions to work ... no idea why.
+        // % needs to be replaced with $ for transclusions to work with url_encoding ... no idea why.
         $t .= '{{Special:CreateNewPage/create/return/'.str_replace('%', '$', urlencode($this->getFullTitle()->getFullText())).'/prefix/'.str_replace('%', '$', urlencode('Utilisateur:'.$this->getUser()->getName().'/Brouillons')).'}}';
         
         $parser = MediaWikiServices::getInstance()->getParser();
