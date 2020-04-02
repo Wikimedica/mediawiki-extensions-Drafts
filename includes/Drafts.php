@@ -45,7 +45,7 @@ class Drafts
 		
 		if (!array_key_exists('drafts', $newPersonalUrls)) 
 		{
-			$newPersonalUrls['sandbox'] = $link;
+			$newPersonalUrls['drafts'] = $link;
 		}
 
 		$personalUrls = $newPersonalUrls;
