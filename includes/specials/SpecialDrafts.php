@@ -83,7 +83,7 @@ class SpecialDrafts extends \FormSpecialPage
                 $t .= "<tr>";
                 if($draft->isRedirect())
                 {
-                    $t .= '<td>\'\'[['.$draft->getFullText().'|'.$draft->getSubpageText().']] (redirection)\'\' </td>';
+                    $t .= '<td class="plainlinks">\'\'[{{fullurl:'.$draft->getFullText().'|redirect=no}} '.$draft->getSubpageText().'] (redirection)\'\' </td>';
                 }
                 else
                 {
