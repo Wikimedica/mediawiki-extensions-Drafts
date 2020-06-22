@@ -24,7 +24,6 @@ class Drafts
 	    // Do not show for anonymous users.
 		if($skin->getUser()->isAnon()) { return true; }
 
-
 		$newPersonalUrls = [];
         
 		$link = [
@@ -51,5 +50,25 @@ class Drafts
 		$personalUrls = $newPersonalUrls;
 		
 		return true;
+	}
+
+	/**
+	 * Add links to the sidebar toolbox.
+	 * @param BaseTemplate $baseTemplate
+	 * @param array $toolbox
+	 */
+	public static function onBaseTemplateToolbox($baseTemplate, &$toolbox )
+	{
+		$skin = $baseTemplate->getSkin();
+		$title = $skin->getTitle();
+
+		// Only display in user space.
+		if(!in_array($title->getNamespace(), [NS_USER, NS_USER_TALK])) { return; }
+
+		$toolbox['drafts'] = [
+			'text' => $skin->msg('drafts-toolbox-text'),
+			'href' => \Title::newFromText('Special:Index/'.$title->getFullText().'/Brouillons')->getLocalUrl(),
+			'id' => 't-drafts'
+		];
 	}
 }

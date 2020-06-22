@@ -21,7 +21,8 @@
 		"MediaWiki\\Extension\\Drafts\\SpecialCreateNewPage": "includes/specials/SpecialCreateNewPage.php"
 	},
 	"Hooks": {
-		"PersonalUrls": "MediaWiki\\Extension\\Drafts::onPersonalUrls"
+		"PersonalUrls": "MediaWiki\\Extension\\Drafts::onPersonalUrls",
+		"BaseTemplateToolbox": "MediaWiki\\Extension\\Drafts::onBaseTemplateToolbox"
 	},
 	"SpecialPages": {
 		"Drafts" : "MediaWiki\\Extension\\Drafts\\SpecialDrafts",
