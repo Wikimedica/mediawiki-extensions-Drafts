@@ -60,7 +60,7 @@ class Drafts
 	public static function onBaseTemplateToolbox($baseTemplate, &$toolbox )
 	{
 		$skin = $baseTemplate->getSkin();
-		$title = $skin->getTitle();
+		$title = $skin->getTitle()->getRootTitle();
 
 		// Only display in user space.
 		if(!in_array($title->getNamespace(), [NS_USER, NS_USER_TALK])) { return; }
