@@ -22,6 +22,7 @@ class SpecialCreateNewPage extends \FormSpecialPage
     
     /** @var boolean if the drafts should be created or preloaded. */
     protected $create = false;
+
     
     /** @var string a prefix to be prepended to all pages created. */
     protected $prefix = '';
@@ -77,7 +78,7 @@ class SpecialCreateNewPage extends \FormSpecialPage
                 $i++;
             }
         }
-        
+
         parent::execute($par);
     }
     
@@ -140,6 +141,35 @@ class SpecialCreateNewPage extends \FormSpecialPage
             ];
         }
         
+        if($this->create)
+        {
+            // The special page is being called within the drafts page.
+            $form['create'] = [
+                'type' => 'submit',
+                'buttonlabel' => 'Créer', 
+            ];
+        }
+        else
+        {            
+            $form['createAsDraft'] = [
+                'type' => 'submit',
+                'buttonlabel' => 'Créer dans mes brouillons',
+            ];
+            
+            $form['createInPlace'] = [
+                'type' => 'submit',
+                'buttonlabel' => 'Créer',
+                'flags' => ['normal']
+            ];
+
+            // This does not work, this is set in Common.css instead.
+            $this->getOutput()->addInlineStyle('            
+            .mw-htmlform-field-HTMLSubmitField
+            {
+                display: inline-block;
+                margin-right: 1em;
+            }');
+        }
         return $form;
     }
     
@@ -149,7 +179,7 @@ class SpecialCreateNewPage extends \FormSpecialPage
     public function onSubmit($data)
     {           
         if(!isset($data['class'])) { return 'Nom de classe manquant'; } // If a class was not provided.
-        
+
         if($data['class'] != 'empty')
         {
             $class = \Title::newFromText($data['class'].'/Prototype', NS_CLASS);
@@ -170,12 +200,24 @@ class SpecialCreateNewPage extends \FormSpecialPage
         }
         else { $content = ''; } // The user wanted a blank page.
         
-        if(!$this->create) // If the user just wanted redirection to a page with preloaded content.
+        if(!$this->create) // If the user just wanted a redirection to a page with preloaded content.
         {
-            $this->getOutput()->redirect(\Title::newFromText($this->name)->getFullURL([
+            // Preload a page within the user's drafts.
+            if(isset($data['createAsDraft']) && $data['createAsDraft'] === true)
+            {
+                $title = \Title::newFromText($this->getUser()->getName().'/Brouillons/'.ucfirst($this->name), NS_USER);
+            }
+            // Preload the page at the required title.
+            else // if(isset($data['createInPlace']) && $data['createInplace'] === true)
+            {
+                $title = \Title::newFromText(ucfirst($this->name));
+            }
+
+            $this->getOutput()->redirect($title->getFullURL([
                 'veaction' => 'edit',
                 'preload' => $data['class'] == 'empty' ? '': $class->getFullText()
             ]));
+
             return;
         }
         
@@ -194,4 +236,17 @@ class SpecialCreateNewPage extends \FormSpecialPage
         
         return 'La page a été crée avec succès.';
     }
+
+    /**
+     * @inheritdoc
+     * */
+    public function alterForm( $form )
+    {
+        global $wgOut;
+        
+        $form->suppressDefaultSubmit();
+
+        return $form;
+    }	
+
 }

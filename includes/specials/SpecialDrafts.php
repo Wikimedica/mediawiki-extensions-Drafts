@@ -47,13 +47,13 @@ class SpecialDrafts extends \FormSpecialPage
         
         if($val = $request->getVal('success', false))
         {
-            $t.= '<div class="success">Le brouillon [['.$user->getUserPage()->getFullText().'/Brouillons/'.$val.'|'.$val.']] a été créé avec succès.</div>'."\n";
+            $t .= '<div class="success">Le brouillon [['.$user->getUserPage()->getFullText().'/Brouillons/'.$val.'|'.$val.']] a été créé avec succès.</div>'."\n";
         }
         else if($val = $request->getVal('delete-success', false))
         {
-            $t.= '<div class="success">Le brouillon [['.$user->getUserPage()->getFullText().'/Brouillons/'.$val.'|'.$val.']] a été supprimé.</div>'."\n";
+            $t .= '<div class="success">Le brouillon [['.$user->getUserPage()->getFullText().'/Brouillons/'.$val.'|'.$val.']] a été supprimé.</div>'."\n";
         }
-        
+
         // Retrieve all the subpages from the database.
         $titleArray = \TitleArray::newFromResult($this->db->select(
             'page',
@@ -110,7 +110,7 @@ class SpecialDrafts extends \FormSpecialPage
                             'flags' => ['destructive']
                         ]))->addClasses(['draft-delete'])),
                         new OOUI\FieldLayout(new OOUI\ButtonWidget([
-                            'label' =>'Renommer', 
+                            'label' =>'Finaliser / Renommer', 
                             'target' => '_blank', 
                             'href' => self::getTitleFor('Movepage', $draft->getFullText())->getCanonicalURL()
                         ]))
