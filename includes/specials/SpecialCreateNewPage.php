@@ -123,7 +123,7 @@ class SpecialCreateNewPage extends \FormSpecialPage
         $form =  [
             'class' => [
                 'type' => 'select',
-                'label' => 'Classe (Type)',
+                'label' => 'Gabarit (classe)',
                 'options' => $classes,
                 'required' => true,
                 'help' => 'Le type de page duquel vous désirez débuter. Pour une page vierge, sélectionner « Page vierge ».'
@@ -162,7 +162,7 @@ class SpecialCreateNewPage extends \FormSpecialPage
                 'flags' => ['normal']
             ];
 
-            // This does not work, this is set in Common.css instead.
+            // This does not work (no idea why), set it in Common.css instead.
             $this->getOutput()->addInlineStyle('            
             .mw-htmlform-field-HTMLSubmitField
             {
