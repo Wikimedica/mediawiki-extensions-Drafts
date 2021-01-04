@@ -65,9 +65,11 @@ class Drafts
 		// Only display in user space.
 		if(!in_array($title->getNamespace(), [NS_USER, NS_USER_TALK])) { return; }
 
+		$title = \MediaWiki\MediaWikiServices::getInstance()->getNamespaceInfo()->getSubjectPage($title); // Make sure we are getting a subject page.
+
 		$toolbox['drafts'] = [
 			'text' => $skin->msg('drafts-toolbox-text'),
-			'href' => \Title::newFromText('Special:Index/'.$title->getFullText().'/Brouillons')->getLocalUrl(),
+			'href' => \Title::newFromText('Special:Index/Utilisateur:'.$title->getText().'/Brouillons')->getLocalUrl(),
 			'id' => 't-drafts'
 		];
 	}
