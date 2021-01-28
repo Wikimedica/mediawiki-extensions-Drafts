@@ -73,4 +73,22 @@ class Drafts
 			'id' => 't-drafts'
 		];
 	}
+
+	/**
+	 * Add Drafts category.
+	 *
+	 * @param Parser $parser
+	 * @param string $text The html output
+	 * @param StripState $stripState
+	 */
+	public static function ParserAfterParse($parser, $text, $stripState) 
+	{
+		if($parser->getTitle()->getNamespace() == NS_USER 
+			&& $parser->getTitle()->isSubPage() 
+			&& strpos($parser->getTitle()->getFullText(), '/Brouillons/') !== false
+		)
+		{
+			$parser->getOutput()->setCategoryLinks(['Brouillons' => 0]);
+		}
+	}
 }
