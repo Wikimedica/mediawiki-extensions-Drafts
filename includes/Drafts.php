@@ -85,10 +85,11 @@ class Drafts
 	{
 		if($parser->getTitle()->getNamespace() == NS_USER 
 			&& $parser->getTitle()->isSubPage() 
-			&& strpos($parser->getTitle()->getFullText(), '/Brouillons/') !== false
+			&& strpos($parser->getTitle()->getText(), '/Brouillons/') !== false
 		)
 		{
-			$parser->getOutput()->setCategoryLinks(['Brouillons' => 0]);
+			// Category => Sort key
+			$parser->getOutput()->setCategoryLinks(['Brouillons' => $parser->getTitle()->getSubpageText()]);
 		}
 	}
 }
