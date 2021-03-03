@@ -75,7 +75,7 @@ class Drafts
 	}
 
 	/**
-	 * Add Drafts category.
+	 * Add Drafts category and prevent draft pages from getting indexed.
 	 *
 	 * @param Parser $parser
 	 * @param string $text The html output
@@ -90,6 +90,10 @@ class Drafts
 		{
 			// Category => Sort key
 			$parser->getOutput()->setCategoryLinks(['Brouillons' => $parser->getTitle()->getSubpageText()]);
+			
+			// Prevent draft pages from getting indexed.
+			global $wgOut;
+			$wgOut->setRobotPolicy('noindex,nofollow');
 		}
 	}
 }

@@ -28,6 +28,8 @@ class SpecialDrafts extends \FormSpecialPage
         parent::__construct('Drafts', 'edit');
         $this->db = wfGetDB( DB_REPLICA );
         $this->addHelpLink(\Title::newFromText('Création de page', NS_HELP)->getFullURL(), true);
+
+        $this->getOutput()->setRobotPolicy('noindex,nofollow'); // Do not index that special page.
     }
     
     /**
