@@ -54,12 +54,11 @@ class Drafts
 
 	/**
 	 * Add links to the sidebar toolbox.
-	 * @param BaseTemplate $baseTemplate
-	 * @param array $toolbox
+	 * @param Skin $skin
+	 * @param array $bar
 	 */
-	public static function onBaseTemplateToolbox($baseTemplate, &$toolbox )
+	public static function onSidebarBeforeOutput( $skin, &$bar )
 	{
-		$skin = $baseTemplate->getSkin();
 		$title = $skin->getTitle()->getRootTitle();
 
 		// Only display in user space.
@@ -67,7 +66,7 @@ class Drafts
 
 		$title = \MediaWiki\MediaWikiServices::getInstance()->getNamespaceInfo()->getSubjectPage($title); // Make sure we are getting a subject page.
 
-		$toolbox['drafts'] = [
+		$bar['TOOLBOX'][] = [
 			'text' => $skin->msg('drafts-toolbox-text'),
 			'href' => \Title::newFromText('Special:Index/Utilisateur:'.$title->getText().'/Brouillons')->getLocalUrl(),
 			'id' => 't-drafts'

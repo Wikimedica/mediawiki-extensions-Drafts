@@ -22,7 +22,7 @@
 	},
 	"Hooks": {
 		"PersonalUrls": "MediaWiki\\Extension\\Drafts::onPersonalUrls",
-		"BaseTemplateToolbox": "MediaWiki\\Extension\\Drafts::onBaseTemplateToolbox",
+		"SidebarBeforeOutput": "MediaWiki\\Extension\\Drafts::onSidebarBeforeOutput",
 		"ParserAfterParse": "MediaWiki\\Extension\\Drafts::ParserAfterParse"
 	},
 	"SpecialPages": {
