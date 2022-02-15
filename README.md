@@ -7,7 +7,7 @@ This extension adds two special pages:
 ## Requirements
 
 - PHP 7.0+
-- MediaWiki 1.31+
+- MediaWiki 1.35+
 
 ## Installation
 
