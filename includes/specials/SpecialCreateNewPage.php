@@ -104,7 +104,7 @@ class SpecialCreateNewPage extends \FormSpecialPage
             []
         ));
         
-        $classes = ['Sélectionnez une classe' => ''];
+        $classes = [];
         
         // Build an array of the class names.
         foreach($titleArray as $title)
@@ -121,6 +121,7 @@ class SpecialCreateNewPage extends \FormSpecialPage
         natcasesort($classes);
         $classes = array_flip($classes); // Needed because the Form object expects the items inverted (label => value).
 
+        $classes = ['Sélectionnez une classe' => ''] + $classes;
         $classes['Page vierge'] = 'empty';
         
         $form =  [
