@@ -115,9 +115,12 @@ class SpecialCreateNewPage extends \FormSpecialPage
                 continue; // Skip this class if it does not have a prototype.
             }
             
-            $classes[$title->getText()] = $title->getDBkey();
+            $classes[ $title->getDBkey() ] = $title->getText(); 
         }
         
+        natcasesort($classes);
+        $classes = array_flip($classes); // Needed because the Form object expects the items inverted (label => value).
+
         $classes['Page vierge'] = 'empty';
         
         $form =  [
