@@ -110,12 +110,12 @@ class SpecialDrafts extends \FormSpecialPage
                             'name' => 'wpDelete',
                             'value' => 1,
                             'flags' => ['destructive']
-                        ]))->addClasses(['draft-delete'])),
-                        new OOUI\FieldLayout(new OOUI\ButtonWidget([
+                        ]))->addClasses(['draft-delete']))
+                        /*new OOUI\FieldLayout(new OOUI\ButtonWidget([
                             'label' =>'Finaliser / Renommer', 
                             'target' => '_blank', 
                             'href' => self::getTitleFor('Movepage', $draft->getFullText())->getCanonicalURL()
-                        ]))
+                        ]))*/
                     ]])
                 ]);
                 
