@@ -246,8 +246,6 @@ class SpecialCreateNewPage extends \FormSpecialPage
      * */
     public function alterForm( $form )
     {
-        global $wgOut;
-        
         $form->suppressDefaultSubmit();
 
         return $form;

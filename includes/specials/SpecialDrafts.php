@@ -91,7 +91,7 @@ class SpecialDrafts extends \FormSpecialPage
                 {
                     $t .= '<td> [['.$draft->getFullText().'|'.$draft->getSubpageText().']] </td>';
                 }
-                $t .= '<td>'.\DateTime::createFromFormat('U', wfTimestamp(TS_UNIX, \Revision::getTimestampFromId($draft, $draft->getLatestRevID())), (new \DateTime())->getTimezone())->format('Y/m/d H:i:s').' </td>';
+                $t .= '<td>'.\DateTime::createFromFormat('U', wfTimestamp(TS_UNIX, MediaWikiServices::getInstance()->getRevisionStore()->getTimestampFromId($draft, $draft->getLatestRevID())), (new \DateTime())->getTimezone())->format('Y/m/d H:i:s').' </td>';
                 
                 $t .= '<td><html>';
                 $form = new OOUI\FormLayout([
@@ -137,8 +137,8 @@ window.addEventListener("load", function(){
 </script></html>'."\n";
         
         // % needs to be replaced with $ for transclusions to work with url_encoding ... no idea why.
-        $t .= '{{Special:CreateNewPage/create/return/'.str_replace('%', '$', urlencode($this->getFullTitle()->getFullText())).'/prefix/'.str_replace('%', '$', urlencode('Utilisateur:'.$this->getUser()->getName().'/Brouillons')).'}}';
-        
+        $t .= '{{:Special:CreateNewPage/create/return/'.str_replace('%', '$', urlencode($this->getFullTitle()->getFullText())).'/prefix/'.str_replace('%', '$', urlencode('Utilisateur:'.$this->getUser()->getName().'/Brouillons')).'}}';
+
         $parser = MediaWikiServices::getInstance()->getParser();
         
         // Parse the Wikicode and return it as HTML.
