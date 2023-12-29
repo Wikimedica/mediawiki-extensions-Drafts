@@ -111,6 +111,7 @@ class SpecialDrafts extends \FormSpecialPage
                             'value' => 1,
                             'flags' => ['destructive']
                         ]))->addClasses(['draft-delete']))
+
                         /*new OOUI\FieldLayout(new OOUI\ButtonWidget([
                             'label' =>'Finaliser / Renommer', 
                             'target' => '_blank', 

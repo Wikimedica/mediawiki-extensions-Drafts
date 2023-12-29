@@ -12,31 +12,28 @@ namespace MediaWiki\Extension;
 class Drafts 
 {
 	/**
-	 * PersonalUrls hook handler.
-	 *
-	 * @param array &$personalUrls
-	 * @param Title &$title (unused)
-	 * @param Skin $skin
-	 * @return bool true
+	 *Modify the personnal URLs
+	 * SkinTemplate $skinTemplate
+	 * array &$links
 	 */
-	public static function onPersonalUrls(&$personalUrls, &$title, $skin) 
-	{
+	public static function onSkinTemplateNavigation_Universal( $skinTemplate, &$links ) {
 	    // Do not show for anonymous users.
-		if($skin->getUser()->isAnon()) { return true; }
-
-		$newPersonalUrls = [];
+		if($skinTemplate->getUser()->isAnon()) { return true; }
         
 		$link = [
 		    'id' => 'pt-drafts',
-		    'text' => $skin->msg( 'drafts-link-label' )->text(),
-		    'title' => $skin->msg( 'drafts-link-title' )->text(),
-		    'href' => \SpecialPage::getSafeTitleFor('Drafts')->getLocalURL(['user' => $skin->getUser()->getName()]),
+		    'text' => $skinTemplate->msg( 'drafts-link-label' )->text(),
+		    'title' => $skinTemplate->msg( 'drafts-link-title' )->text(),
+		    'href' => \SpecialPage::getSafeTitleFor('Drafts')->getLocalURL(['user' => $skinTemplate->getUser()->getName()]),
 		    'exists' => true,
+			'icon' => 'edit'
 		];
 		
+		$newPersonalUrls = [];
+
 		// Insert our link before the link to user preferences.
 		// If the link to preferences is missing, insert at the end.
-		foreach($personalUrls as $key => $value) 
+		foreach($links['user-menu'] as $key => $value) 
 		{
 			if($key === 'preferences') { $newPersonalUrls['drafts'] = $link; }
 			$newPersonalUrls[$key] = $value;
@@ -47,7 +44,7 @@ class Drafts
 			$newPersonalUrls['drafts'] = $link;
 		}
 
-		$personalUrls = $newPersonalUrls;
+		$links['user-menu'] = $newPersonalUrls;
 		
 		return true;
 	}
