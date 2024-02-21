@@ -11,6 +11,7 @@ namespace MediaWiki\Extension\Drafts;
 
 use MediaWiki\MediaWikiServices;
 use Wikimedia\Rdbms\Database;
+use RequestContext;
 
 /**
  * @inheritdoc
@@ -32,7 +33,7 @@ class SpecialCreateNewPage extends \FormSpecialPage
     
     /** @var string a name for the page to be created. */
     protected $name = '';
-    
+
     /**
      * @inheritdoc
      * */
@@ -47,7 +48,7 @@ class SpecialCreateNewPage extends \FormSpecialPage
      * @inheritdoc
      * */
     public function execute($par)
-    {
+    {   
         // Format the parameters passed to this special page.
         $p = explode('/', $par);
         for($i = 0; $i < count($p); $i++)
@@ -79,7 +80,19 @@ class SpecialCreateNewPage extends \FormSpecialPage
             }
         }
 
-        parent::execute($par);
+		$form = $this->getForm();
+        $form->show();
+
+		// GET forms can be set as includable
+		if ( !$this->including() ) {
+			//$result = $this->getShowAlways() ? $form->showAlways() : $form->show();
+		} else {
+			$result = $form->prepareForm()->tryAuthorizedSubmit();
+		}
+
+		if ( $result === true || ( $result instanceof Status && $result->isGood() ) ) {
+			$this->onSuccess();
+		}
     }
     
     /**
@@ -155,11 +168,15 @@ class SpecialCreateNewPage extends \FormSpecialPage
         }
         else
         {            
-            $form['createAsDraft'] = [
-                'type' => 'submit',
-                'buttonlabel' => 'Créer dans mes brouillons',
-            ];
+            $title = RequestContext::getMain()->getTitle(); // Title of the current page being requested (not necessarily this special page, which might be an inclusion).
             
+            if($title->getNamespace() != NS_USER && !strpos($title->getText(), 'Brouillons')) {
+                // Don't display that button if we are already in the user's Draft space.
+                $form['createAsDraft'] = [
+                    'type' => 'submit',
+                    'buttonlabel' => 'Créer dans mes brouillons',
+                ];
+            }
             $form['createInPlace'] = [
                 'type' => 'submit',
                 'buttonlabel' => 'Créer',
@@ -197,9 +214,11 @@ class SpecialCreateNewPage extends \FormSpecialPage
             
             if($this->create) // The user wants to create a new blank page with preloaded content.
             {
-                $prototype = \Article::newFromTitle($class, \RequestContext::getMain());
-                $content = $prototype->getRevision()->getContent()->getNativeData();
-                $content = str_replace(['<includeonly>' , '</includeonly>'], '', $content);
+                $prototype = \WikiPage::factory($class, RequestContext::getMain());
+                $content = $prototype->getContent( \MediaWiki\Revision\RevisionRecord::RAW );
+                try { $text = \ContentHandler::getContentText( $content ); } 
+                catch ( \Exception $e ) { return false; }
+                $content = str_replace(['<includeonly>' , '</includeonly>'], '', $text);
             }
         }
         else { $content = ''; } // The user wanted a blank page.
@@ -226,7 +245,7 @@ class SpecialCreateNewPage extends \FormSpecialPage
         }
         
         if(!isset($data['name'])) { return 'Nom de page manquant'; } // If a name was not provided.
-        $draft = \Article::newFromTitle(\Title::newFromText($this->prefix.'/'.ucfirst($data['name'])), \RequestContext::getMain())->getPage();
+        $draft = \Article::newFromTitle(\Title::newFromText($this->prefix.'/'.ucfirst($data['name'])), RequestContext::getMain())->getPage();
         
         /* Save the new draft. Allows overwriting an existing page with preloaded content, something 
          * MediaWiki does not allow. */

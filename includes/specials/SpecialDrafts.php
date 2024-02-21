@@ -46,7 +46,7 @@ class SpecialDrafts extends \FormSpecialPage
         $user = $this->getUser();
         $this->setHeaders();
         $t = '';
-        
+
         if($val = $request->getVal('success', false))
         {
             $t .= '<div class="success">Le brouillon [['.$user->getUserPage()->getFullText().'/Brouillons/'.$val.'|'.$val.']] a été créé avec succès.</div>'."\n";
