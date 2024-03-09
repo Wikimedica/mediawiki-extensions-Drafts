@@ -112,8 +112,13 @@ class Drafts
 	 * $article Article the missing article.
 	 */
 	public static function onShowMissingArticle( $article ) {
-		if($article->getTitle()->getNamespace() == NS_USER && strpos($article->getTitle()->getText(), '/Brouillons')) {
-			\RequestContext::getMain()->getOutput()->redirect(Title::newFromText('Drafts', NS_SPECIAL)->getFullUrl());
+		
+		$request = \RequestContext::getMain();
+
+		if($article->getTitle()->getNamespace() == NS_USER && 
+			$article->getTitle()->getText() == $request->getUser()->getName().'/Brouillons'
+		) {
+			$request->getOutput()->redirect(Title::newFromText('Drafts', NS_SPECIAL)->getFullUrl());
 		}
 	}
 }
