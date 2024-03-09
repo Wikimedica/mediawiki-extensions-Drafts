@@ -11,6 +11,7 @@ namespace MediaWiki\Extension\Drafts;
 
 use MediaWiki\MediaWikiServices;
 use OOUI;
+use Html;
 
 /**
  * @inheritdoc
@@ -47,13 +48,18 @@ class SpecialDrafts extends \FormSpecialPage
         $this->setHeaders();
         $t = '';
 
-        if($val = $request->getVal('success', false))
-        {
-            $t .= '<div class="success">Le brouillon [['.$user->getUserPage()->getFullText().'/Brouillons/'.$val.'|'.$val.']] a été créé avec succès.</div>'."\n";
-        }
-        else if($val = $request->getVal('delete-success', false))
-        {
-            $t .= '<div class="success">Le brouillon [['.$user->getUserPage()->getFullText().'/Brouillons/'.$val.'|'.$val.']] a été supprimé.</div>'."\n";
+        if($val = $request->getVal('delete-success', false))
+        {            
+            $this->getOutPut()->addHTML(
+				Html::successBox(
+					Html::element(
+						'p',
+						[],
+						'Le brouillon '.$val.' a été supprimé'
+					),
+					'mw-notify-success'
+				)
+			);
         }
 
         // Retrieve all the subpages from the database.
@@ -138,7 +144,7 @@ window.addEventListener("load", function(){
 </script></html>'."\n";
         
         // % needs to be replaced with $ for transclusions to work with url_encoding ... no idea why.
-        $t .= '{{:Special:CreateNewPage/create/return/'.str_replace('%', '$', urlencode($this->getFullTitle()->getFullText())).'/prefix/'.str_replace('%', '$', urlencode('Utilisateur:'.$this->getUser()->getName().'/Brouillons')).'}}';
+        $t .= '{{:Special:CreateNewPage}}';
 
         $parser = MediaWikiServices::getInstance()->getParser();
         
@@ -172,15 +178,17 @@ window.addEventListener("load", function(){
     public function onSubmit($data)
     {
         if(!$data['name']) { return 'Nom de page manquant'; } // If a name was not provided.
-        $draft = \Article::newFromTitle(\Title::newFromText($this->getUser()->getName().'/Brouillons/'.ucfirst($data['name']), NS_USER), \RequestContext::getMain())->getPage();
+        $draft = MediaWikiServices::getInstance()->getWikiPageFactory()->newFromTitle(\Title::newFromText($this->getUser()->getName().'/Brouillons/'.ucfirst($data['name']), NS_USER));
         
         if($data['delete'] === null) // If this is a request to delete a page.
         {
             $errors = [];
             if(!$draft->exists()) { return 'La page n\'existe pas'; }
-            if(!$draft->doDeleteArticle('Suppression du brouillon', false, null, null, $errors, $this->getUser(), true))
-            {
-                return 'La suppression de la page a échouée.';
+            // Delete the page. deleteUnsafe() can be used since users are allowed to delete pages from their drafts.
+            $status = MediaWikiServices::getInstance()->getDeletePAgeFactory()->newDeletePage($draft, $this->getUser())->deleteUnsafe('Suppression du brouillon');
+            
+            if(!$status->isGood()) {
+                return $status;
             }
             
             $this->getOutput()->redirect($this->getFullTitle()->getFullURL(['delete-success' => $draft->getTitle()->getSubpageText()]));
