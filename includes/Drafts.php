@@ -9,6 +9,8 @@
 
 namespace MediaWiki\Extension;
 
+use Title;
+
 class Drafts 
 {
 	/**
@@ -77,7 +79,7 @@ class Drafts
 	 * @param string $text The html output
 	 * @param StripState $stripState
 	 */
-	public static function ParserAfterParse($parser, $text, $stripState) 
+	public static function onParserAfterParse($parser, $text, $stripState) 
 	{
 		if($parser->getTitle()->getNamespace() == NS_USER 
 			&& $parser->getTitle()->isSubPage() 
@@ -90,6 +92,28 @@ class Drafts
 			// Prevent draft pages from getting indexed.
 			global $wgOut;
 			$wgOut->setRobotPolicy('noindex,nofollow');
+		}
+	}
+
+	/**
+	 * Make User:USERNAME/Brouillons know because it is always redirected to the special page.
+	 * This will also display it in the breadcrumbs.
+	 * 
+	 * $title Title object that is being checked
+	 * $isKnown: Boolean|null whether MediaWiki currently thinks this page is known
+	 */
+	public static function onTitleIsAlwaysKnown( $title, &$isAlwaysKnown ) {
+		$isAlwaysKnown = $title->getNamespace() == NS_USER && strpos($title->getText(), '/Brouillons') ? true: $isAlwaysKnown;
+	}
+
+	/**
+	 * Redirect all references to User:USERNAME/Brouillons to the special page.
+	 * 
+	 * $article Article the missing article.
+	 */
+	public static function onShowMissingArticle( $article ) {
+		if($article->getTitle()->getNamespace() == NS_USER && strpos($article->getTitle()->getText(), '/Brouillons')) {
+			\RequestContext::getMain()->getOutput()->redirect(Title::newFromText('Drafts', NS_SPECIAL)->getFullUrl());
 		}
 	}
 }

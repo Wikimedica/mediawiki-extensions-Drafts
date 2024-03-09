@@ -23,7 +23,9 @@
 	"Hooks": {
 		"SkinTemplateNavigation::Universal": "MediaWiki\\Extension\\Drafts::onSkinTemplateNavigation_Universal",
 		"SidebarBeforeOutput": "MediaWiki\\Extension\\Drafts::onSidebarBeforeOutput",
-		"ParserAfterParse": "MediaWiki\\Extension\\Drafts::ParserAfterParse"
+		"ParserAfterParse": "MediaWiki\\Extension\\Drafts::onParserAfterParse",
+		"TitleIsAlwaysKnown": "MediaWiki\\Extension\\Drafts::onTitleIsAlwaysKnown",
+		"ShowMissingArticle": "MediaWiki\\Extension\\Drafts::onShowMissingArticle"
 	},
 	"SpecialPages": {
 		"Drafts" : "MediaWiki\\Extension\\Drafts\\SpecialDrafts",
