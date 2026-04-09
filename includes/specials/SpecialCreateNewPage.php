@@ -30,7 +30,7 @@ class SpecialCreateNewPage extends \FormSpecialPage
     public function __construct() 
     {
         parent::__construct('CreateNewPage', 'edit');
-        $this->db = wfGetDB( DB_REPLICA );
+        $this->db = MediaWikiServices::getInstance()->getConnectionProvider()->getReplicaDatabase();
         $this->mIncludable = true;
     }
     
@@ -98,7 +98,7 @@ class SpecialCreateNewPage extends \FormSpecialPage
         foreach($titleArray as $title)
         {
             if($title->isSubpage()) { continue; } // Skip subpages.
-            if(!\Title::newFromText($title->getText().'/Prototype', NS_CLASS)->exists())
+            if(!\MediaWiki\Title\Title::newFromText($title->getText().'/Prototype', NS_CLASS)->exists())
             {
                 continue; // Skip this class if it does not have a prototype.
             }
@@ -133,7 +133,7 @@ class SpecialCreateNewPage extends \FormSpecialPage
             ];
         }
         
-        $title = \Title::newFromText($_REQUEST['title']); // Title of the current page being requested (not necessarily this special page, which might be an inclusion).
+        $title = \MediaWiki\Title\Title::newFromText($_REQUEST['title']); // Title of the current page being requested (not necessarily this special page, which might be an inclusion).
 
         if($title == null) {
             // This was not meant for us. Probably a page deletion in Special:Drafts. Just return the form normally.
@@ -196,7 +196,7 @@ class SpecialCreateNewPage extends \FormSpecialPage
 
         if($data['class'] != 'empty')
         {
-            $class = \Title::newFromText($data['class'].'/Prototype', NS_CLASS);
+            $class = \MediaWiki\Title\Title::newFromText($data['class'].'/Prototype', NS_CLASS);
             
             // Do some validation.
             if(!$class->exists()) { return 'Classe invalide ou ne contient pas de prototype'; }
@@ -210,12 +210,12 @@ class SpecialCreateNewPage extends \FormSpecialPage
         // Preload a page within the user's drafts.
         if(isset($data['createAsDraft']) && $data['createAsDraft'] === true)
         {
-            $title = \Title::newFromText($this->getUser()->getName().'/Brouillons/'.ucfirst($this->name), NS_USER);
+            $title = \MediaWiki\Title\Title::newFromText($this->getUser()->getName().'/Brouillons/'.ucfirst($this->name), NS_USER);
         }
         // Preload the page at the required title.
         else // if(isset($data['createInPlace']) && $data['createInplace'] === true)
         {
-            $title = \Title::newFromText(ucfirst($this->name));
+            $title = \MediaWiki\Title\Title::newFromText(ucfirst($this->name));
         }
 
         $this->getOutput()->redirect($title->getFullURL([

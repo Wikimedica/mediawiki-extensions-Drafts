@@ -27,8 +27,8 @@ class SpecialDrafts extends \FormSpecialPage
     public function __construct() 
     {
         parent::__construct('Drafts', 'edit');
-        $this->db = wfGetDB( DB_REPLICA );
-        $this->addHelpLink(\Title::newFromText('Création de page', NS_HELP)->getFullURL(), true);
+        $this->db = MediaWikiServices::getInstance()->getConnectionProvider()->getReplicaDatabase();
+        $this->addHelpLink(\MediaWiki\Title\Title::newFromText('Création de page', NS_HELP)->getFullURL(), true);
 
         $this->getOutput()->setRobotPolicy('noindex,nofollow'); // Do not index that special page.
     }
@@ -178,7 +178,7 @@ window.addEventListener("load", function(){
     public function onSubmit($data)
     {
         if(!$data['name']) { return 'Nom de page manquant'; } // If a name was not provided.
-        $draft = MediaWikiServices::getInstance()->getWikiPageFactory()->newFromTitle(\Title::newFromText($this->getUser()->getName().'/Brouillons/'.ucfirst($data['name']), NS_USER));
+        $draft = MediaWikiServices::getInstance()->getWikiPageFactory()->newFromTitle(\MediaWiki\Title\Title::newFromText($this->getUser()->getName().'/Brouillons/'.ucfirst($data['name']), NS_USER));
         
         if($data['delete'] === null) // If this is a request to delete a page.
         {

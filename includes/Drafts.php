@@ -9,7 +9,7 @@
 
 namespace MediaWiki\Extension;
 
-use Title;
+use MediaWiki\Title\Title;
 
 class Drafts 
 {
@@ -28,7 +28,7 @@ class Drafts
 		    'title' => $skinTemplate->msg( 'drafts-link-title' )->text(),
 		    'href' => \SpecialPage::getSafeTitleFor('Drafts')->getLocalURL(['user' => $skinTemplate->getUser()->getName()]),
 		    'exists' => true,
-			'icon' => 'edit'
+			'icon' => 'sandbox'
 		];
 		
 		$newPersonalUrls = [];
@@ -67,7 +67,7 @@ class Drafts
 
 		$bar['TOOLBOX'][] = [
 			'text' => $skin->msg('drafts-toolbox-text'),
-			'href' => \Title::newFromText('Special:Index/Utilisateur:'.$title->getText().'/Brouillons')->getLocalUrl(),
+			'href' => \MediaWiki\Title\Title::newFromText('Special:Index/Utilisateur:'.$title->getText().'/Brouillons')->getLocalUrl(),
 			'id' => 't-drafts'
 		];
 	}
