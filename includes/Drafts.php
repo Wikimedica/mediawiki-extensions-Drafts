@@ -87,7 +87,7 @@ class Drafts
 		)
 		{
 			// Category => Sort key
-			$parser->getOutput()->setCategoryLinks(['Brouillons' => $parser->getTitle()->getSubpageText()]);
+			$parser->getOutput()->setCategories(['Brouillons' => $parser->getTitle()->getSubpageText()]);
 			
 			// Prevent draft pages from getting indexed.
 			global $wgOut;
