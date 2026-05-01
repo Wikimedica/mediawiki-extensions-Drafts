@@ -81,7 +81,7 @@ class SpecialCreateNewPage extends \FormSpecialPage
     public function getFormFields()
     {
         // Retrieve all the ontology classes from the database.
-        $titleArray = \TitleArray::newFromResult($this->db->select(
+        $titleArray = MediaWikiServices::getInstance()->getTitleFactory()->newTitleArrayFromResult($this->db->select(
             'page',
             [ 'page_id', 'page_namespace', 'page_title'],
             [

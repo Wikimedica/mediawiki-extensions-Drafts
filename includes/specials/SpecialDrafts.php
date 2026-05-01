@@ -41,7 +41,7 @@ class SpecialDrafts extends \FormSpecialPage
     /**
      * @inheritdoc
      **/
-    public function preText() 
+    public function preHtml()
     {
         $request = $this->getRequest();
         $user = $this->getUser();
@@ -49,7 +49,7 @@ class SpecialDrafts extends \FormSpecialPage
         $t = '';
 
         if($val = $request->getVal('delete-success', false))
-        {            
+        {
             $this->getOutPut()->addHTML(
 				Html::successBox(
 					Html::element(
@@ -63,7 +63,7 @@ class SpecialDrafts extends \FormSpecialPage
         }
 
         // Retrieve all the subpages from the database.
-        $titleArray = \TitleArray::newFromResult($this->db->select(
+        $titleArray = MediaWikiServices::getInstance()->getTitleFactory()->newTitleArrayFromResult($this->db->select(
             'page',
             [ 'page_id', 'page_namespace', 'page_title', 'page_is_redirect' ],
             [
@@ -185,7 +185,7 @@ window.addEventListener("load", function(){
             $errors = [];
             if(!$draft->exists()) { return 'La page n\'existe pas'; }
             // Delete the page. deleteUnsafe() can be used since users are allowed to delete pages from their drafts.
-            $status = MediaWikiServices::getInstance()->getDeletePAgeFactory()->newDeletePage($draft, $this->getUser())->deleteUnsafe('Suppression du brouillon');
+            $status = MediaWikiServices::getInstance()->getDeletePageFactory()->newDeletePage($draft, $this->getUser())->deleteUnsafe('Suppression du brouillon');
             
             if(!$status->isGood()) {
                 return $status;
