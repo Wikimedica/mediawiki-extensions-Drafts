@@ -25,7 +25,8 @@
 		"SidebarBeforeOutput": "MediaWiki\\Extension\\Drafts::onSidebarBeforeOutput",
 		"ParserAfterParse": "MediaWiki\\Extension\\Drafts::onParserAfterParse",
 		"TitleIsAlwaysKnown": "MediaWiki\\Extension\\Drafts::onTitleIsAlwaysKnown",
-		"ShowMissingArticle": "MediaWiki\\Extension\\Drafts::onShowMissingArticle"
+		"ShowMissingArticle": "MediaWiki\\Extension\\Drafts::onShowMissingArticle",
+		"BeforeEchoEventInsert": "MediaWiki\\Extension\\Drafts::onBeforeEchoEventInsert"
 	},
 	"SpecialPages": {
 		"Drafts" : "MediaWiki\\Extension\\Drafts\\SpecialDrafts",

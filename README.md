@@ -4,6 +4,8 @@ This extension adds two special pages:
 - SpecialDrafts: lists all subpages of User:Name/Drafts/* and allows the deletion and renaming of those pages
 - SpecialCreateNewPage: embeddable special pages that allows the creation of a new page with a preloaded template selected from a dropdown
 
+With Echo installed, watchlist notifications are not sent for drafts (User:Name/Brouillons/*).
+
 ## Requirements
 
 - PHP 8.0+

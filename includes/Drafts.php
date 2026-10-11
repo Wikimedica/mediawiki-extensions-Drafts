@@ -121,4 +121,23 @@ class Drafts
 			$request->getOutput()->redirect(Title::newFromText('Drafts', NS_SPECIAL)->getFullUrl());
 		}
 	}
+
+	/**
+	 * Do not send watchlist notifications for drafts: authors save them over and over, and
+	 * watchers only care about the page once it is moved out of the drafts.
+	 * Echo handles watchlist notifications entirely, so this silences both the web notice and the email.
+	 *
+	 * $event EchoEvent the event about to be inserted.
+	 * @return bool|void false to abort the event.
+	 */
+	public static function onBeforeEchoEventInsert( $event ) {
+		$title = $event->getTitle();
+
+		if(in_array($event->getType(), ['watchlist-change', 'minor-watchlist-change'], true)
+			&& $title && $title->getNamespace() == NS_USER
+			&& strpos($title->getText().'/', '/Brouillons/') !== false
+		) {
+			return false;
+		}
+	}
 }
